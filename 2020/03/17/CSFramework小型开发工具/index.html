@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>CSFramework小型开发工具 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="&amp;emsp;&amp;emsp;我们在计算机网络课程中学过网络的OSI的七层模型，但只是理解其描述的一些概念，并没有真正的实现，只是个概念性框架。而另一种提出的TCP&#x2F;IP参考模型被投入应用了。参考前两种层次模型，我们可以提出CSFramework使用的层次模型，如下图。   &amp;emsp;&amp;emsp;首先是最底层通信层（Communication），该层只关心最底层通信的事和对端异常掉线问题，但不关心接收">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSFramework小型开发工具">
+<meta property="og:url" content="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;我们在计算机网络课程中学过网络的OSI的七层模型，但只是理解其描述的一些概念，并没有真正的实现，只是个概念性框架。而另一种提出的TCP&#x2F;IP参考模型被投入应用了。参考前两种层次模型，我们可以提出CSFramework使用的层次模型，如下图。   &amp;emsp;&amp;emsp;首先是最底层通信层（Communication），该层只关心最底层通信的事和对端异常掉线问题，但不关心接收">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://honorzmj98.github.io/img/CSFramework/2.png">
+<meta property="article:published_time" content="2020-03-17T06:48:00.000Z">
+<meta property="article:modified_time" content="2020-03-17T06:49:25.566Z">
+<meta property="article:author" content="HonorZmj98">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://honorzmj98.github.io/img/CSFramework/2.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://HonorZmj98.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSFramework小型开发工具" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time datetime="2020-03-17T06:48:00.000Z" itemprop="datePublished">2020-03-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CSFramework小型开发工具
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;我们在计算机网络课程中学过网络的OSI的七层模型，但只是理解其描述的一些概念，并没有真正的实现，只是个概念性框架。而另一种提出的TCP/IP参考模型被投入应用了。参考前两种层次模型，我们可以提出CSFramework使用的层次模型，如下图。</p>
+<img src="/img/CSFramework/2.png" alt="2" style="zoom: 67%;" />
+
+<p>&emsp;&emsp;首先是最底层<font color= red><strong>通信层</strong>（Communication）</font>，该层只关心最底层通信的事和对端异常掉线问题，但不关心接收到的相关信息该如何处理。信息的处理不在这一层，这一层没有权利处理信息，只是将信息发给对端的作用。</p>
+<p>&emsp;&emsp;下来是<font color= red><strong>会话层</strong>（Conversation）</font>,该层会收到来自下层的包装好的信息（协议），根据信息的内容去处理信息。该层可以看出对等层的概念，ServerConversation和ClientConversation之间的交锋。在sever这边看ServerConversation就是客户端，在client这边看ClientConversation就是服务器。</p>
+<p>&emsp;&emsp;工具的最后一层是<font color= red><strong>Server层</strong>和<strong>Client层</strong></font>，该层是提供给外面使用的，而下面层都是工具的内部东西，不提供给外面用。所以，层是一步步建立起来的，你虽然只看到最高层用的简单，却不知道底下要有多少层在默默支持着。工具也是这样，最后用户使用的十分方便，可工具制造者才能直到建立的艰辛。<em>“辛苦我一人，幸福千万家！”</em>工具制造者最终的追求。话题扯远了，因为是CSFramework的最后一层，那就要包括CS一些普遍且必要的一些内容。例如，服务器这边的启动服务器和关闭服务器，客户端那边的连接服务器和下线，单发消息，群发消息等功能。</p>
+<p>&emsp;&emsp;再高层称为<font color= red><strong>应用层</strong></font>，该层的实现不管因为会因为不同的APP而不同，所以更高层的开发由CSFramework工具的使用者去完成，就不用关心我底层的实现了。</p>
+<p>&emsp;&emsp;先把整体要搭建的框架一说，接下来就开始造我们的工具。<em>友情提示：可能有些类会突兀的出现，先不要纠结于此，因为我把这个代码已经写过好几次了，一步步实现叙述太麻烦了，所以给最终代码，当然期间细节思想会讲的</em></p>
+<h2 id="CSFramework"><a href="#CSFramework" class="headerlink" title="CSFramework"></a>CSFramework</h2><h3 id="com-mec-csframework-core包"><a href="#com-mec-csframework-core包" class="headerlink" title="com.mec.csframework.core包"></a>com.mec.csframework.core包</h3><p>第一个肯定是我们最底层且是Server和Client都共有的通信层Communication类，前面也说了，该类只关心信息的传输，因此该层就是建立通信信道和接受发信息的过程。</p>
+<h4 id="Communication类（通信层）"><a href="#Communication类（通信层）" class="headerlink" title="Communication类（通信层）"></a>Communication类（通信层）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Communication</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">	<span class="comment">//方法几乎都是包权限，因为只在工具中用，工具的保护</span></span><br><span class="line">	<span class="keyword">private</span> Socket socket;</span><br><span class="line">	<span class="keyword">private</span> DataInputStream dis;</span><br><span class="line">	<span class="keyword">private</span> DataOutputStream dos;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> goon;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Communication</span><span class="params">(Socket socket)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.socket = socket;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			dis = <span class="keyword">new</span> DataInputStream(socket.getInputStream());</span><br><span class="line">			dos = <span class="keyword">new</span> DataOutputStream(socket.getOutputStream());</span><br><span class="line">			goon = <span class="keyword">true</span>;</span><br><span class="line">			<span class="keyword">new</span> Thread(<span class="keyword">this</span>, <span class="string">"通信层"</span>).start();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">dealPeerMessage</span><span class="params">(NetMessage message)</span></span>;<span class="comment">//处理对端信息</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">peerAbnormalDrop</span><span class="params">()</span></span>;<span class="comment">//对端异常掉线</span></span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		String message = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">while</span> (goon) &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				message = dis.readUTF();</span><br><span class="line">				dealPeerMessage(<span class="keyword">new</span> NetMessage(message));</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">				<span class="keyword">if</span> (goon == <span class="keyword">true</span>) &#123;</span><br><span class="line">					peerAbnormalDrop();</span><br><span class="line">				&#125;</span><br><span class="line">				close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		goon = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (socket != <span class="keyword">null</span> &amp;&amp; !socket.isClosed()) &#123;</span><br><span class="line">				socket.close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			socket = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (dis != <span class="keyword">null</span>) &#123;</span><br><span class="line">				dis.close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			dis = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (dos != <span class="keyword">null</span>) &#123;</span><br><span class="line">				dos.close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			dos = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(NetMessage message)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			dos.writeUTF(message.toString());</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			close();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在想这么一种情况，我一个客户端要给另一个客户端发送“byebye”消息，该消息被服务器接收到后，服务器误认为它要下线（如上篇博文规定的那样），就去做下线操作了，实际上我们只是想把信息发给另一个客户端，并无下线的意思。因此，我认为如果Communication仅仅只传字符串String类型有点不够，我们应该对网络消息规范化，将网络命令和真正的会话内容区分开了，因此有了NetMessage类。</p>
+<h4 id="NetMessage类（传输的网络信息）"><a href="#NetMessage类（传输的网络信息）" class="headerlink" title="NetMessage类（传输的网络信息）"></a>NetMessage类（传输的网络信息）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetMessage</span> </span>&#123;</span><br><span class="line">	<span class="comment">//发送和接受的信息必须是该类对象</span></span><br><span class="line">	<span class="keyword">private</span> ENetCommand command;</span><br><span class="line">	<span class="keyword">private</span> String action;</span><br><span class="line">	<span class="keyword">private</span> String parameter;</span><br><span class="line">	</span><br><span class="line">	NetMessage() &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	NetMessage(String message) &#123;<span class="comment">//根据制订的规矩解析</span></span><br><span class="line">		<span class="keyword">int</span> colonIndex = message.indexOf(<span class="string">':'</span>);</span><br><span class="line">		<span class="keyword">this</span>.command = ENetCommand.valueOf(message.substring(<span class="number">0</span>, colonIndex));</span><br><span class="line">		message = message.substring(colonIndex + <span class="number">1</span>);</span><br><span class="line">		colonIndex = message.indexOf(<span class="string">':'</span>);</span><br><span class="line">		String actionStr = message.substring(<span class="number">0</span>, colonIndex).trim();</span><br><span class="line">		<span class="keyword">this</span>.action = (actionStr.length() &lt;= <span class="number">0</span> ? <span class="keyword">null</span> : actionStr);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">this</span>.parameter = message.substring(colonIndex + <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;<span class="comment">//规矩 命令:动作:信息</span></span><br><span class="line">		<span class="keyword">return</span> command + <span class="string">":"</span> + (action == <span class="keyword">null</span> ? <span class="string">" "</span> : action) + <span class="string">":"</span> + parameter;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">ENetCommand <span class="title">getCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> command;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setCommand</span><span class="params">(ENetCommand command)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.command = command;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">String <span class="title">getAction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> action;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setAction</span><span class="params">(String action)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.action = action;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">String <span class="title">getParameter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> parameter;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setParameter</span><span class="params">(String parameter)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.parameter = parameter;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>传输的信息由command（命令），action（动作，这个以后会用到不必深究），parameter（真正的消息）组成。其中带参构造是解析过程，toString方法是封装一个信息过程。为了表示网络命令的简单，我们可以使用Enum（枚举）。</p>
+<h4 id="ENetCommand（枚举命令）"><a href="#ENetCommand（枚举命令）" class="headerlink" title="ENetCommand（枚举命令）"></a>ENetCommand（枚举命令）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> ENetCommand &#123;</span><br><span class="line"></span><br><span class="line">	ServerFoeceDown,</span><br><span class="line">	ServerFull,</span><br><span class="line">	WhoAreYou,</span><br><span class="line">	IAm,</span><br><span class="line">	EnsureOnline,</span><br><span class="line">	Offline,</span><br><span class="line">	ToOne,</span><br><span class="line">	ToAll,</span><br><span class="line">	</span><br><span class="line">	Request,</span><br><span class="line">	Response,</span><br><span class="line">	</span><br><span class="line">	ClientAbnormalDrop,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个肯定不是未卜先知就知道所有的命令，这个是最终代码效果。</p>
+<p>至此，一个编程手法就出现了。<strong>我通过NetMessage这个类屏蔽了底层真正传输的信息，我只接受NetMessage类的对象的结果。不允许你发任意String。这样约束了你的行为，我的解析变得有章可循。这就叫做<font color= red>协议</font></strong>。</p>
+<p>接下来就建立下一层会话层(Conversation)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*不完整的*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServerConversation</span> <span class="keyword">extends</span> <span class="title">Communication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ServerConversation</span><span class="params">(Socket socket)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>(socket);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dealPeerMessage</span><span class="params">(NetMessage message)</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">peerAbnormalDrop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">------------------------------------------------------------------------------------</span><br><span class="line"><span class="comment">/*不完整的*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClientConversation</span> <span class="keyword">extends</span> <span class="title">Communication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ClientConversation</span><span class="params">(Socket socket)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>(socket);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dealPeerMessage</span><span class="params">(NetMessage message)</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">peerAbnormalDrop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现它们是继承Communication来的，然后什么都写不了。是呀，你根本没有需求啊，没有需求让他们之间进行交锋，所以当然什么都写不了。那就去建立更高层Client和Server。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*不完整的*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server</span> <span class="keyword">implements</span> <span class="title">Runnable</span>,<span class="title">ISpeaker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ServerSocket server;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> port;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> listeningClient;</span><br><span class="line">	<span class="keyword">private</span> List&lt;IListener&gt; listenerList;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> maxClientCount;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Server</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		port = IDefaultNetConfig.DEFAULT_PORT;</span><br><span class="line">		listenerList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">		maxClientCount = IDefaultNetConfig.DEFAULT_MAX_Client_COUNT;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initConfig</span><span class="params">(String propertiesAbsolutePath)</span> </span>&#123;	<span class="comment">//方便用properties文件对server进行初始化</span></span><br><span class="line">		ProperitiesParse.loadProperities(propertiesAbsolutePath);</span><br><span class="line">		<span class="keyword">this</span>.port = Integer.valueOf(ProperitiesParse.value(<span class="string">"port"</span>));</span><br><span class="line">		<span class="keyword">this</span>.maxClientCount = Integer.valueOf(ProperitiesParse.value(<span class="string">"maxClientCount"</span>));</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startUp</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (listeningClient == <span class="keyword">true</span>) &#123;</span><br><span class="line">			publishMessage(<span class="string">"服务器已经启动，请勿重复启动"</span>);</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		publishMessage(<span class="string">"开始建立服务器..."</span>);</span><br><span class="line">		server = <span class="keyword">new</span> ServerSocket(port);</span><br><span class="line">		publishMessage(<span class="string">"服务器建立成功"</span>);</span><br><span class="line">		listeningClient = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">new</span> Thread(<span class="keyword">this</span>, <span class="string">"服务器"</span>);</span><br><span class="line">		publishMessage(<span class="string">"开始侦听客户端连接请求"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutDown</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (listeningClient == <span class="keyword">false</span>) &#123;</span><br><span class="line">			publishMessage(<span class="string">"服务器已经宕机，请勿重复宕机"</span>);</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		closeServer();</span><br><span class="line">		publishMessage(<span class="string">"服务器正常关闭"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isStartUp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> listeningClient;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">closeServer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		listeningClient = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (server != <span class="keyword">null</span> &amp;&amp; !server.isClosed()) &#123;</span><br><span class="line">				server.close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			server = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">while</span> (listeningClient) &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				Socket client = server.accept();</span><br><span class="line">				<span class="comment">//TODO 做侦听到一个客户端连接要做的事</span></span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">				closeServer(); <span class="comment">//侦听客户端都不成功，说明server有问题直接关闭</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addListener</span><span class="params">(IListener listener)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (listenerList.contains(listener)) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		listenerList.add(listener);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeListener</span><span class="params">(IListener listener)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!listenerList.contains(listener)) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		listenerList.remove(listener);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">publishMessage</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (IListener listener : listenerList) &#123;</span><br><span class="line">			listener.processMessage(message);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里出现了三个接口，有必要解释一下。首先是IDefaultNetConfig</p>
+<h4 id="IDefaultNetConfig接口（默认配置）"><a href="#IDefaultNetConfig接口（默认配置）" class="headerlink" title="IDefaultNetConfig接口（默认配置）"></a>IDefaultNetConfig接口（默认配置）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IDefaultNetConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> DEFAULT_PORT = <span class="number">54188</span>;		<span class="comment">//默认的端口号</span></span><br><span class="line">	String DEFAULT_SERVER_IP = <span class="string">"127.0.0.1"</span>;	<span class="comment">//默认服务器ip地址，本地地址</span></span><br><span class="line">	<span class="keyword">int</span> DEFAULT_MAX_Client_COUNT = <span class="number">200</span>;	<span class="comment">//默认服务器最大连接数量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很简单理解是默认的设置，仅仅是本地的一般测试，用户可以使用相关init方法进行修改。</p>
+<p>而接下来就是讲一个重要的思想，<font color= red><strong>观察者模式</strong></font>。</p>
+<p>我们知道，server有许多信息例如服务器启动、客户端上线等信息是要处理的，很明显我们server工具对于这些信息不能插手，要交给上面APP层去处理，但是APP处理该信息我们做工具的根本不得而知，它可以System.out.println()在控制台输出下，也有可能是命令行模式，还有可能是我们以后写的界面显示一下。所以这么多不确定性该如何操作？这个时候就要使用接口了。让APP层提供一个能够处理在Server层信息的方法，我们Server调用这个方法，而APP具体如何处理信息我们不管，这和我工具Server无关。</p>
+<h4 id="IListener接口（倾听者）"><a href="#IListener接口（倾听者）" class="headerlink" title="IListener接口（倾听者）"></a>IListener接口（倾听者）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">processMessage</span><span class="params">(String message)</span></span>;	<span class="comment">//处理消息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>APP层去实现这个接口，去具体实现如何处理消息</p>
+<h4 id="ISpeaker接口（倾诉者）"><a href="#ISpeaker接口（倾诉者）" class="headerlink" title="ISpeaker接口（倾诉者）"></a>ISpeaker接口（倾诉者）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ISpeaker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">addListener</span><span class="params">(IListener listener)</span></span>;		<span class="comment">//添加听众</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">removeListener</span><span class="params">(IListener listener)</span></span>;	<span class="comment">//删除听众</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">publishMessage</span><span class="params">(String message)</span></span>;	<span class="comment">//发布消息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Server实现这个接口，其中方法包括增加听众（IListener的实现类），删除听众（不再倾听就删除），发布消息，向每个听众发送消息，你如何处理是你的事，我反正都发，所有听众都发。</p>
+<p>如果你还是不理解我再举个简单例子。ISpeaker相当于一个报社，IListener相当于一个订报纸的人。报社根本不管用户拿到报纸如何读报纸，报社只管增加订报纸的人，删除退订的人，和向每个订了报纸的人送报纸。而订报纸的用户处理得到的报纸信息，各自有各自的处理办法。</p>
+<p>这就是<em>观察者模式</em>。</p>
+<p>好，接下来继续写Server层。我们做到了侦听到一个客户端（Socket），接下来该怎么做？该client是Client层那个吗？不是的，服务器和客户端是分别开发的，Server层这边根本没有任何Client层的东西，再看最开始的结构图，Server与Client进行通信必须向下经过Conversation层，因此应该用这个client去实例化个serverConversation，正如我前面所说的Conversation是对等层，在Server这边看serverConversation就是一个客户端。同时，我们在此提个疑问，难道侦听到一个连接就真的是一个正常的客户端吗？如果这个客户端连接上服务器，半天不说话，就会占用相关有效资源。假如有很多这种“僵尸机”，服务器的性能将会大打折扣。所以我们要准备两个客户端池，一个是真正有效的用户连接池，一个是临时的用户连接池，够不够资格当我的有效用户，要经过我服务器的测试才可以。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ck7vjdwri0000p8i28nrfe4ii" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">CSFramework的引出</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">CSFramework小型开发工具</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/">CSFramework的引出</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/">XML文件与Properites文件解析工具</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/">EasySwing一键生成界面的工具</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">我的第一篇博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 HonorZmj98<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
