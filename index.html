@@ -64,6 +64,154 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-20200401@DNS@BS@长连接和短连接" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" class="article-date">
+  <time datetime="2020-04-01T00:36:59.000Z" itemprop="datePublished">2020-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/">20200401@DNS@BS@长连接和短连接</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;我们使用电脑最常做的事情就是上网了。基本过程是打开自己的安装好的浏览器软件，进入主页，（不考虑用搜索引擎）在网址栏输入自己要访问的网址，等待一会就到了自己想要的界面了。今天我们就简单了解下在这简单过程下的具体过程。</p>
+<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><p>&emsp;&emsp;首先说什么是域名，也就是我们平时在网址栏输入的网址。</p>
+<img src="/img/NOTE/1.png" alt="1" style="zoom:80%;" />
+
+<p>&emsp;&emsp;DNS服务:简单的来说为 <strong>域名</strong>-&gt; <strong>ip地址</strong>。DNS为互联网的各种网络应用提供核心服务。为什么这么说呢？如果一个用户要与网络中某台主机进行通信的话，必须要知道对方的ip地址，我们知道ip的是为了区分互联网上的各个主机的，但是ip地址不方便且没有特殊的规律，使用起来不方便，因此被域名代替。域名人读和使用起来方便，但机器不行。所以为了平衡人机之间的问题，就有了DNS服务。</p>
+<p>&emsp;&emsp;从理论上来讲，整个互联网可以使用一个域名服务器，让它记载所有域名和ip地址的映射关系，但这种做法并不可取。原因其一随着使用互联网的人越来越多，一个DNS服务器受到的压力就会越来越大，DNS服务器这边超负荷工作对机器不好，同时被服务的用户体验感也会不好会感到慢。其二一旦这个域名服务器崩溃了，整个全球的互联网就会瘫痪。因此需要使用<em>分布式的域名系统DNS</em>。</p>
+<p><img src="/img/NOTE/2.png" alt="2"></p>
+<p>&emsp;&emsp;根域名服务器：是最高层次的域名服务器，所有根域名服务器都知道所有顶级域名服务器的域名和ip地址的映射。它是最重要的域名服务器，因为不管是哪一个本地域名服务器，若要对互联网上任一个域名进行解析，只要自己无法解析，就首先求助根域名服务器。（看图不要以为全世界就一个，不同国家个数不同）</p>
+<p>&emsp;&emsp;顶级域名服务器：这些域名服务器负责管理在该顶级域名服务器注册的二级域名。当收到DNS查询请求时，就给出相应回答。</p>
+<p>&emsp;&emsp;本地域名服务器：当一台主机发出DNS查询请求时，这个请求报文发给离提请用户较近的本地域名服务器，当要解析的地址和提请用户是同一个地方时，该域名服务器就立即将查询结果返回给提请用户，不需要再去询问其他域名服务器。若不能解析，则求助根域名服务器。同时本地服务器有存有最近查询到的域名的缓存（就是近期常访问的域名ip地址映射），以便高速反馈给用户。</p>
+<h2 id="C-S模式和B-S模式区别"><a href="#C-S模式和B-S模式区别" class="headerlink" title="C/S模式和B/S模式区别"></a>C/S模式和B/S模式区别</h2><p>&emsp;&emsp;C/S模式前面CSFramework就是此模式，该模式就是长连接，所谓长连接我们知道当Server端收到一个来自客户端的连接都会开启一个与该客户端进行通信的通信信道，并且正常情况下一直维持着这就是长连接。</p>
+<img src="/img/NOTE/3.png" alt="3" style="zoom:80%;" />
+
+<p>&emsp;&emsp;客户端给服务器发请求，服务器收到请求发回响应。这只是一个客户端的连接，它俩建立的通信信道也就是Communication是一直在运行的线程，所以它的通信是十分稳定的，两端都在一直听对端消息。服务器之所以称为服务器，是因为它可以接收和管理很多客户端。所以一定会有很多客户端的连接，服务器这边要维持的线程也就越来越多。所以，总结下长连接。</p>
+<ul>
+<li><p>长连接的优点：建立的通信信道稳定，接受对端消息不考虑网络时延的话都是实时接收到的。</p>
+</li>
+<li><p>长连接的缺点：随着客户端的越来越多，服务器建立的通信信道越来越多，并且每个还都要维持住，服务器收到的压力会愈发增大。</p>
+</li>
+</ul>
+<hr>
+<p>  &emsp;&emsp;B/S模式，B：浏览器（Browser），S：Web服务器（Web Server）。基本构成是这样的。</p>
+<img src="/img/NOTE/4.png" alt="4" style="zoom:80%;" />
+
+<p>浏览器可以分三部分主要功能去做。客户端，是应用程序，解释程序。</p>
+<p>客户端：因为它要与Web服务器相连，所以它是客户端。http等众多协议都在这里编写和处理。</p>
+<p>应用程序：它是编写好的，能直接执行的代码。</p>
+<p>解释程序：他能解析html文件、css文件、js文件，还能解析wav、MP4文件。</p>
+<p>所以一个浏览器是很不容易开发的，幸好我们有现成的可以用。Chrome、火狐、360等浏览器。</p>
+<p>由图我们还可以知道浏览器所解析的资源文件在Web服务器的数据库中。</p>
+<p>通过多次上网并且开启F12键（调试模式）可以总结出上网过程。</p>
+<ol>
+<li><p>开启浏览器；</p>
+</li>
+<li><p>指定需要连接的Web服务器(APP服务器)地址(域名)；</p>
+</li>
+<li><p>由浏览器向DNS(域名解析服务器)请求解析域名，以得到Web服务器IP地址；</p>
+</li>
+<li><p>向目标IP地址发出首页文件(通常是index.html文件)“请求”；</p>
+</li>
+<li><p>服务器将index.html资源“响应”给浏览器；</p>
+</li>
+<li><p>浏览器解释(执行)index.html的内容，并根据其内容，向服务器发出其它请求……</p>
+</li>
+</ol>
+<p>&emsp;&emsp;因此你浏览一个网页不是只发了一次请求而是很多请求。输入网站域名只是请求资源的第一炮（index.html），还要请求好多资源都写在html文件里，请求到许多图片，浏览器在把它们安排到合适的位置，这样你才能看见一个个形形色色的网页。</p>
+<p>浏览器与服务器的请求与响应过程：</p>
+<ol>
+<li>浏览器向服务器提请连接请求；</li>
+<li>浏览器向服务器发送“请求”信息；</li>
+<li>服务器接收并处理请求信息，得到响应结果；</li>
+<li>服务器将“响应”信息回传给浏览器；</li>
+<li>断开连接。</li>
+</ol>
+<p>每一个请求都是这样的。也许你会问，Q:<strong>为什么断开连接啊，连接是耗费时间的，先别急断开，等到最后一次响应完再断开不行吗？</strong></p>
+<p>A：</p>
+<ol>
+<li>若维持这个连接，需要服务器对每一个客户端开辟一个线程；这个线程维持连接和会话就像前面的CSFramework一样；</li>
+<li>同时进行上网访问的客户端(浏览器)数量是巨大的！这个数量是服务器通过建立线程维持会话，所不能承受的！上这个网页的人千千万万，不可能每个人都要一直占我服务器资源。</li>
+<li>于是，需要抛弃“长连接”思路！产生了“短连接”工作模式！</li>
+</ol>
+<p>因此我们提出了短连接，过程是只发一个请求过去，服务器收到请求响应发出后就断开连接。后面的请求再请求就是了。简单来说就是一次请求，一次响应。</p>
+<ul>
+<li>短连接的优点：能“同时”响应数量巨大的浏览器请求，而不至于造成系统资源严重不足！且代码逻辑十分简单就是只发送一次就断开。</li>
+<li>短连接的缺点：带来<strong>“无状态”</strong>这个问题。</li>
+</ul>
+<p>&emsp;&emsp;所谓无状态这样解释。站在服务器角度，客户端发出的请求是“相同的”；服务器不区分发出请求的客户端；也不判别这个请求是否是由以前曾经发送过请求的客户端发出的。简单的说：服务器根本不关心请求是由谁发出的；即，服务器无法知道发送信息的客户端的状态。无状态虽然简单，方便，但他存在安全问题，你的第一次访问和第100次访问我都认为是一次访问，是谁不知道，是第几次也不知道。</p>
+<p>&emsp;&emsp;短连接存在不安全的例子：如果一个网页需要登陆才能查看相应的用户图片，可以通过F12找到那个图片所在的链接，然后直接通过链接再开一个浏览器可以直接访问到不用登陆了。</p>
+<img src="/img/NOTE/5.png" alt="5" style="zoom:80%;" />
+
+<p>&emsp;&emsp;C/S里我们知道我们的通信信道是一直打开的，为了侦听对端信息。而我们短连接如果Web服务器维持成千上万客户端的通信信道那么服务器这边压力就很大。同时服务器这里若不写read对端消息，根本读不到。就相当于打电话，服务器这里有很多电话，多个人说话的话筒都放在一起，但我没有人去听这些话筒有没有发出声音。好在我们有个容器（Set/Map）里面放着这些connection。可以扫描那个集合，每过几毫秒打开一个通信信道看有谁说话了，有说话就开个线程去处理信息，没有则换下一个。<strong><font color= red>轮询</font></strong>!</p>
+<p>&emsp;&emsp;当听到对端说话了，我这个扫描线程不处理相应信息，他将产生一个线程去处理这个信息，处理完这个线程完毕。</p>
+<p>&emsp;&emsp;但问题又出现了，大量客户端socket会出现在那个盒子中，多到一定程度，内存受不了，于是，给该空间最大连接数量，一旦超过，淘汰最长时间不说话的那个，把它替换掉。</p>
+<p>&emsp;&emsp;同时如某一个客户端长时间不说话，我断开这个连接。</p>
+<p>&emsp;&emsp;对这个集合操作太多了，所以要用线程。线程之间的配合。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://honorzmj98.github.io/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" data-id="ck8ig6jyx0000toi2h0qic4ux" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-CSFramework的应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/" class="article-date">
+  <time datetime="2020-03-20T01:50:00.000Z" itemprop="datePublished">2020-03-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/">CSFramework的应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;前面博文讲了</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://honorzmj98.github.io/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/" data-id="ck8ig6jz40001toi24cepe6o5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-CSFramework小型开发工具" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" class="article-date">
@@ -261,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ck8bqrj0e0003t4i2fbp17nun" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ck8ig6jzi0006toi2800i48m5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -369,7 +517,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" data-id="ck8bqrj020002t4i27m7xcx8j" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" data-id="ck8ig6jzg0004toi2axocbvp7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -448,7 +596,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/" data-id="ck8bqrj000001t4i29d5ld8m9" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/" data-id="ck8ig6jzh0005toi2amvb9sva" class="article-share-link">Share</a>
       
       
     </footer>
@@ -571,7 +719,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ck8bqrizv0000t4i2bpmr886b" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ck8ig6jz90003toi2d9nqbnm4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -621,7 +769,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" data-id="ck8bqrj0q0004t4i26spy1i6u" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" data-id="ck8ig6jz70002toi2fz3g7fzm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -649,7 +797,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
     </div>
   </div>
 
@@ -662,6 +810,14 @@
       <ul>
         
           <li>
+            <a href="/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/">20200401@DNS@BS@长连接和短连接</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/">CSFramework的应用</a>
+          </li>
+        
+          <li>
             <a href="/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">CSFramework小型开发工具</a>
           </li>
         
@@ -671,14 +827,6 @@
         
           <li>
             <a href="/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/">XML文件与Properites文件解析工具</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/">EasySwing一键生成界面的工具</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">我的第一篇博客</a>
           </li>
         
       </ul>
