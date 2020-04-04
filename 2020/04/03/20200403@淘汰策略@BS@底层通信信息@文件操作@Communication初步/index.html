@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>20200403@淘汰策略@BS@底层通信信息@文件操作@Communication初步 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="video:20200330、20200331 淘汰策略&amp;emsp;&amp;emsp;重做CSFramework，采用短连接。以前的Communication类的模式是否还能用？发现不行，Server和Client最底层都是这个Communication。在短连接模式下，实质上，客户端完全可以持有一个线程，该线程持续侦听服务器消息；而服务器不再针对每一个客户端维持一个线程。由Socket创建的DataI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="20200403@淘汰策略@BS@底层通信信息@文件操作@Communication初步">
+<meta property="og:url" content="https://honorzmj98.github.io/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="video:20200330、20200331 淘汰策略&amp;emsp;&amp;emsp;重做CSFramework，采用短连接。以前的Communication类的模式是否还能用？发现不行，Server和Client最底层都是这个Communication。在短连接模式下，实质上，客户端完全可以持有一个线程，该线程持续侦听服务器消息；而服务器不再针对每一个客户端维持一个线程。由Socket创建的DataI">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-03T00:36:59.000Z">
+<meta property="article:modified_time" content="2020-04-04T14:37:49.048Z">
+<meta property="article:author" content="HonorZmj98">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://HonorZmj98.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-20200403@淘汰策略@BS@底层通信信息@文件操作@Communication初步" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/" class="article-date">
+  <time datetime="2020-04-03T00:36:59.000Z" itemprop="datePublished">2020-04-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      20200403@淘汰策略@BS@底层通信信息@文件操作@Communication初步
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>video:20200330、20200331</p>
+<h2 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h2><p>&emsp;&emsp;重做CSFramework，采用短连接。以前的Communication类的模式是否还能用？发现不行，Server和Client最底层都是这个Communication。在短连接模式下，实质上，客户端完全可以持有一个线程，该线程持续侦听服务器消息；而服务器不再针对每一个客户端维持一个线程。由Socket创建的DataInputStream和DataOutputStream都是需要占用内存空间的。</p>
+<p>&emsp;&emsp;上节提到过服务器应该将“客户端网络连接”存储到一个池子中，并进行轮询。若池子已经满了，再来个新的连接，该怎么办？那肯定要淘汰以前老的连接。关于淘汰哪个就有了如下淘汰机制。</p>
+<p>&emsp;&emsp;提到淘汰策略我就联想到了到了操作系统课讲的页面置换算法，两个基本思想是一样的。</p>
+<h3 id="方案一FIFO（先进先出）"><a href="#方案一FIFO（先进先出）" class="headerlink" title="方案一FIFO（先进先出）"></a>方案一FIFO（先进先出）</h3><p>&emsp;&emsp;顾名思义就是断开池子里最早的连接，以便于新的连接加入。其优点在于实现起来十分方便，但是缺点是可能有这样的情况，最老的连接是和我一直保持说话，也就是活跃度很高的连接，淘汰它当然不应该。</p>
+<h3 id="方案二LRU（最近最久未使用）"><a href="#方案二LRU（最近最久未使用）" class="headerlink" title="方案二LRU（最近最久未使用）"></a>方案二LRU（最近最久未使用）</h3><p>&emsp;&emsp;其提出的依据是：长时间没搭理我，那么较近的一段时间内，它和我在说话的概率会很低。其做法是在每一个连接中，增加一个计数器。</p>
+<ul>
+<li>做法一：某个连接的某一次请求，给该计数器增1；当池子满时，淘汰计数器值最小的那个连接。可能问题：若连接1有100个请求然后过了好久没发请求但它计数器高啊；连接100也是刚来的，虽然只发了一次请求但保不准还要发，现在连接101来了，就把无辜的100踢了，1这种没踢，很明显不应该这样。</li>
+<li>做法二：某个连接的某次请求，给除了这个连接的其他连接计数器+1，淘汰最大的数值可以避免上面踢错人情况。但缺点在于操作次数频繁，给其他每个连接计数器+1（每一个连接就是一个o（100）操作），性能稍微弱一点，但淘汰准确。其实淘汰还是不一定准确，因为有积累数据。</li>
+</ul>
+<h3 id="方案三综合考虑"><a href="#方案三综合考虑" class="headerlink" title="方案三综合考虑"></a>方案三综合考虑</h3><p>&emsp;&emsp;在每一个连接中增加活跃度，发送请求活跃度+1，给别的连接活跃度-1。最后淘汰活跃度最低的。这个想法是好的可以操作花费时间会很多。</p>
+<h2 id="底层通信信息"><a href="#底层通信信息" class="headerlink" title="底层通信信息"></a>底层通信信息</h2><p>&emsp;&emsp;连接要进行数据交互的，单纯的数据交互不受上层这些算法（淘汰策略）的影响。现在只讨论两个通信对端的信息传递，这个操作是最底层的，且双方是相同的。客户端向服务器发送请求，和服务器对请求进行响应。之后通信信道断开还是连接，还是连接池子该怎么捣鼓，我不管，我单单只管信息通信。C向S发请求，S向C发结果，这里是单纯的不受上层影响。就是最底层的Communicaion。只不过这个com是否维持个线程是个问题。对客户端需要维持这个线程，而服务器端不需要要不然压力太大。</p>
+<p>&emsp;&emsp;客户端行为：向服务器端发送信息，然后等待服务器端返回信息；</p>
+<p>&emsp;&emsp;服务器端行为：以两种方式获知客户端发来的消息；</p>
+<p>&emsp;&emsp;第一种，侦听到客户端连接请求；</p>
+<p>&emsp;&emsp;第二种，轮询池子中的连接，获知有消息传来。接着，可以激活(产生)一个独立线程，处理消息；再将消息的处理结果返回给客户端。</p>
+<p>&emsp;&emsp;从上面的讨论可以知道，消息的传递本身，可以独立出来。communication只管发出和接受消息，上层怎么接受消息（服务器轮询接受）不归我管。</p>
+<p>&emsp;&emsp;这次我们communication增强功能，还能处理二进制信息，因为网络传输图片、音频和视频等文件都是传递的该文件的二进制信息。之前在CSFramework里实现的Communication只负责收发字符串信息，而这些信息包含Command、action、parameter。Command和action依然维持字符串方式，仅对parameter用二进制进行传输。</p>
+<p>&emsp;&emsp;parameter本身存在两大类情况：字符串和纯二进制。若parameter是字符串，可以将其转换为二进制。这样的想法，主要目的是简化传输内容的类型。于是，需要增加一个成员：type，其取值为BIN和STR。为了标识传输的东西。</p>
+<p>&emsp;&emsp;因为二进制的收发，是要通过read()和write()方法实现的，且read()方法必须知道要接收的二进制信息的字节数。因此，还需要增加一个成员：len，其取值为parameter的字节数。实际上readUTF()本身是通过传递二进制信息完成的，且readUTF()必须知道要传递的二进制字节数。</p>
+<p>&emsp;&emsp;用上述方式进行信息的传递，需要经过两个步骤：</p>
+<p>&emsp;&emsp;第一步：只发送command、action、type和len；</p>
+<p>&emsp;&emsp;第二步：无论如何，按照二进制接收para部分，再通过解析，将二进制消息转换成字符串。</p>
+<p>&emsp;&emsp;如果是字符串相关的最高层没法直接得到字符串，于是加strPara。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetMessage</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BIN = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> STR = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> ENetCommand command;</span><br><span class="line">	<span class="keyword">private</span> String action;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> type;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> length;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] binPara;</span><br><span class="line">	<span class="keyword">private</span> String strPara;</span><br><span class="line">	</span><br><span class="line">	NetMessage() &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">ENetCommand <span class="title">getCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> command;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setCommand</span><span class="params">(ENetCommand command)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.command = command;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">String <span class="title">getAction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> action;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setAction</span><span class="params">(String action)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.action = action;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">getType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> type;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setType</span><span class="params">(<span class="keyword">int</span> type)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.type = type;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">getLength</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> length;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">byte</span>[] getBinPara() &#123;</span><br><span class="line">		<span class="keyword">return</span> binPara;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setBinPara</span><span class="params">(<span class="keyword">byte</span>[] binPara)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.binPara = binPara;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.type == STR) &#123;</span><br><span class="line">			<span class="keyword">this</span>.strPara = <span class="keyword">new</span> String(binPara);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">this</span>.type = BIN;	</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">this</span>.length = binPara.length;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">String <span class="title">getStrPara</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> strPara;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">NetMessage <span class="title">setStrPara</span><span class="params">(String strPara)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.strPara = strPara;</span><br><span class="line">		<span class="keyword">this</span>.type = STR;</span><br><span class="line">		<span class="keyword">this</span>.binPara = strPara.getBytes();</span><br><span class="line">		<span class="keyword">this</span>.length = binPara.length;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		StringBuffer str = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span> (type == STR) &#123;</span><br><span class="line">			<span class="keyword">if</span> (strPara == <span class="keyword">null</span>) &#123;</span><br><span class="line">				strPara = <span class="string">""</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			binPara = strPara.getBytes();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (binPara == <span class="keyword">null</span>) &#123;</span><br><span class="line">			binPara = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">0</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		length = binPara.length;</span><br><span class="line">		str.append(command.name()).append(<span class="string">'.'</span>).append(action == <span class="keyword">null</span> ? <span class="string">" "</span> : action)</span><br><span class="line">			.append(<span class="string">'.'</span>).append(type).append(<span class="string">'.'</span>).append(length);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> str.toString();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	NetMessage(String message) &#123;</span><br><span class="line">		<span class="keyword">int</span> dotIndex = message.indexOf(<span class="string">'.'</span>);</span><br><span class="line">		<span class="keyword">this</span>.command = ENetCommand.valueOf(message.substring(<span class="number">0</span>, dotIndex));</span><br><span class="line">		message = message.substring(dotIndex + <span class="number">1</span>);</span><br><span class="line">		dotIndex = message.indexOf(<span class="string">'.'</span>);</span><br><span class="line">		<span class="keyword">this</span>.action = message.substring(<span class="number">0</span>, dotIndex);</span><br><span class="line">		<span class="keyword">this</span>.action = action.trim().length() &lt;= <span class="number">0</span> ? <span class="keyword">null</span> : action;</span><br><span class="line">		message = message.substring(dotIndex + <span class="number">1</span>);</span><br><span class="line">		dotIndex = message.indexOf(<span class="string">'.'</span>);</span><br><span class="line">		<span class="keyword">this</span>.type = Integer.valueOf(message.substring(<span class="number">0</span>, dotIndex));</span><br><span class="line">		message = message.substring(dotIndex + <span class="number">1</span>);</span><br><span class="line">		<span class="keyword">this</span>.length = Integer.valueOf(message);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;总的来说就是先发有关信息的头部信息（command,action,type,len），然后再发真正的二进制信息。</p>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			File file = <span class="keyword">new</span> File(<span class="string">"bin/resource/road.mp3"</span>);</span><br><span class="line">			FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">			FileOutputStream fos = </span><br><span class="line">					<span class="keyword">new</span> FileOutputStream(<span class="string">"bin/target/copy.mp3"</span>);</span><br><span class="line">			<span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">while</span> ((value = fis.read()) != -<span class="number">1</span>) &#123;</span><br><span class="line">				fos.write(value);</span><br><span class="line">			&#125;</span><br><span class="line">			fis.close();</span><br><span class="line">			fos.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;FileInputStream相当于从哪来，FileOutputStream是到哪去。但是这样FileInputStream.read逐个字节的传输是十分慢的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> BUFFER_SIZE = <span class="number">1</span> &lt;&lt; <span class="number">13</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			File file = <span class="keyword">new</span> File(<span class="string">"bin/resource/road.mp3"</span>);</span><br><span class="line">			FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">			FileOutputStream fos = </span><br><span class="line">					<span class="keyword">new</span> FileOutputStream(<span class="string">"bin/target/copy.mp3"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_SIZE];</span><br><span class="line">			<span class="keyword">int</span> readLen = <span class="number">0</span>;</span><br><span class="line">			readLen = fis.read(buffer);</span><br><span class="line">			<span class="keyword">while</span> (readLen != -<span class="number">1</span>) &#123;</span><br><span class="line">				fos.write(buffer);</span><br><span class="line">				readLen = fis.read(buffer);</span><br><span class="line">			&#125;</span><br><span class="line">			fis.close();</span><br><span class="line">			fos.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;可以FileOutputStream.write（缓冲数组），速度会提高的很快，但是copy过去的文件比源文件大了，这是正常的因为你的文件不一定是8k（缓冲区大小）整数倍，最后一次有可能小于8k，后面的就用倒数第二次的数据补上了。因此，这种方法速度很快但是，传输的文件不能保证大小一致。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> BUFFER_SIZE = <span class="number">1</span> &lt;&lt; <span class="number">13</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			File file = <span class="keyword">new</span> File(<span class="string">"bin/resource/road.mp3"</span>);</span><br><span class="line">			FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">			FileOutputStream fos = </span><br><span class="line">					<span class="keyword">new</span> FileOutputStream(<span class="string">"bin/target/copy.mp3"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_SIZE];</span><br><span class="line">			<span class="keyword">int</span> readLen = <span class="number">0</span>;</span><br><span class="line">			readLen = fis.read(buffer);</span><br><span class="line">			<span class="keyword">while</span> (readLen != -<span class="number">1</span>) &#123;</span><br><span class="line">				fos.write(buffer, <span class="number">0</span>, readLen);</span><br><span class="line">				readLen = fis.read(buffer);</span><br><span class="line">			&#125;</span><br><span class="line">			fis.close();</span><br><span class="line">			fos.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;FileOutputStream.write.write(b, off, len);把buffer中，从偏移量为off，长度为len写到文件里面去。这样速度就快，并且文件大小还准确，完完全全的复制粘贴。</p>
+<p>&emsp;&emsp;经过实验，发现调大缓冲区的大小，传输速度会越来越快，在本地传输你可以把缓冲区大小设置为小于内存容量的大小。但是考虑在网络传输，在网络中传输通过学习计算机网络我们知道一个ip数据报报文最大长度是2^16 - 1，即65535，但是考虑到ip数据报报文包含头部信息，因此实际数据量应该小于65535。最好以32KB作为一次传输的量。</p>
+<p>&emsp;&emsp;原因：对于大于64KB的数据报文，会被路由器自动切割成小于64KB的片段。在发送端切割和在接收端拼凑都需要花费时间的。</p>
+<h2 id="Communication初步"><a href="#Communication初步" class="headerlink" title="Communication初步"></a>Communication初步</h2><p>&emsp;&emsp;网络文件（二进制）信息传输主要分成两大部分。发送方：读取文件中一块内容（缓冲区），并发送；接收方：接受网络传输过来的一块内容，并写到文件中。对于大块数据的网络传输，可能需要多次发送和多次接收。</p>
+<p>&emsp;&emsp;但是，对于我们要实现的Communication类所提供的信息发送与接受，只关心一次发送，多次接收。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Communication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> NetConnection netConnection;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BUFFER_SIZE = <span class="number">1</span> &lt;&lt; <span class="number">15</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Communication</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Communication</span><span class="params">(NetConnection netConnection)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.netConnection = netConnection;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">send</span><span class="params">(NetMessage message)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (netConnection == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		DataOutputStream dataOutputStream = netConnection.getDataOutputStream();</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			dataOutputStream.writeUTF(message.toString());</span><br><span class="line">			dataOutputStream.write(message.getBinPara(), <span class="number">0</span>, message.getLength());</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO 对端异常掉线</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function">NetMessage <span class="title">receive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (netConnection == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		NetMessage netMessage = <span class="keyword">null</span>;</span><br><span class="line">		DataInputStream dataInputStream = netConnection.getDataInputStream();</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String message = dataInputStream.readUTF();</span><br><span class="line">			netMessage = <span class="keyword">new</span> NetMessage(message);</span><br><span class="line">			<span class="keyword">byte</span>[] binPara = readBinPara(dataInputStream, netMessage.getLength());</span><br><span class="line">			netMessage.setBinPara(binPara);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO 对端异常掉线</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> netMessage;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] readBinPara(DataInputStream dataInputStream, <span class="keyword">int</span> len) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">		<span class="keyword">byte</span>[] result = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">		<span class="keyword">int</span> restLen = len;</span><br><span class="line">		<span class="keyword">int</span> offset = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> readLen = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> length = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> (restLen &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			length = restLen &gt; BUFFER_SIZE ? BUFFER_SIZE : restLen;</span><br><span class="line">			readLen = dataInputStream.read(result, offset, length);</span><br><span class="line">			restLen -= readLen;</span><br><span class="line">			offset += readLen;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;发送端send方法。先发送信息头部包含command,action,type和length。再发具体的二进制信息，因为要根据头部信息来知道二进制信息的属性。最重要的信息有后面二进制信息的长度，这对我以后应该如何接收有很大作用。以前一直以为TCP报文中报文长度len这个属性很鸡肋，总是产生疑问对端直接接收消息不行吗?为什么还需要长度？今天从代码角度我才算是认识了。通信信道不能想成电话线，你隔这儿一直听就知道有多少信息。从代码角度理解报文长度的重要性。</p>
+<p>&emsp;&emsp;接收端receive方法。先接收信息头部，解析信息头部得到netMessage对象，其中包含command，action，type和length。根据length去开始接收二进制信息。再netMessage设置二进制信息，整体圆满了。<code>restLen</code>：还剩多少字节没读 <code>offset</code>：写在距最开始多少偏移量 <code>readLen</code>：真正读了多少字节 <code>length</code>：打算要读多少字节。</p>
+<p>&emsp;&emsp;总的来说，发送是一次发送完，接收是多次接收。发送是纯纯粹粹的发送一段二进制信息，当然要通过高层保证信息不是很大，接收是多次接收的原因：因为网络传输过程是十分复杂的，接收对端信息的准确性才称为一次完美的对话。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://honorzmj98.github.io/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/" data-id="ck8lq48kz0001k0i276tq8xzy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">20200401@DNS@BS@长连接和短连接</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/">20200403@淘汰策略@BS@底层通信信息@文件操作@Communication初步</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/">20200401@DNS@BS@长连接和短连接</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/">CSFramework的应用</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">CSFramework小型开发工具</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/">CSFramework的引出</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 HonorZmj98<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
