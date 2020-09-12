@@ -97,7 +97,7 @@
 <h2 id="规范方法"><a href="#规范方法" class="headerlink" title="规范方法"></a>规范方法</h2><p>​        接口在使用中有一个强有力的规定：<strong>凡是实现了该接口的非抽象类，就必须实现这个接口所规定的所有抽象方法</strong>。正是因为这个规定十分严格，也就有了<strong>规范行为</strong>的意义。有如下规范。</p>
 <pre><code>1. 接口的所有方法必须实现，一个都不能少
   2. 规范了方法的名称
-        3. 规范了方法的参数个数以及类型
+                3. 规范了方法的参数个数以及类型
             4. 规范了方法的返回值</code></pre><p>​        但是，规范是规范，规定你必须这样做并不涉及方法的具体实现，这一点在swing编程的适配器（Adapter）有体现。</p>
 <hr>
 <h2 id="方法的公开"><a href="#方法的公开" class="headerlink" title="方法的公开"></a>方法的公开</h2><p>​        同样是规范的作用，只不过这次看的角度不同，从应用角度看。如果我们已知一个接口，那么当我们遇到它的实现类后，我们就可以肆无忌惮的去调用接口里的方法，因为这个类一定实现了的。</p>
@@ -123,7 +123,7 @@
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		DataSort ds = <span class="keyword">new</span> DataSort();</span><br><span class="line">		ds.setDataSource(<span class="keyword">new</span> DataFromScanner());  <span class="comment">//对于不同的数据源头只用改这里</span></span><br><span class="line">		ds.sort();</span><br><span class="line">		System.out.println(<span class="string">"排序后:"</span>);</span><br><span class="line">		ds.showList();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="E:%5Cblog%5CHonorZmjBlog%5Csource%5Cimg%5CInterface%5C1.png" alt=""></p>
+<p>![]<img src="/img/Interface/1.png" alt="1" style="zoom:50%;" /></p>
 <hr>
 <h1 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h1><h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>​        外循环是排序需要的趟数，n个数，只需n-1趟，最后只剩一位就在该在的位置。</p>
 <p>​        内循环是一趟相邻两数的比较，按需要的顺序写比较规则，要注意的是，因为每过一趟就有一个数排好了（一个泡泡到边边了），因此在减去躺次数。</p>
@@ -152,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/09/11/20200911@%E6%8E%A5%E5%8F%A3@%E6%8E%92%E5%BA%8F/" data-id="ckezf4ld000016si2gld4dfub" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/09/11/20200911@%E6%8E%A5%E5%8F%A3@%E6%8E%92%E5%BA%8F/" data-id="ckezfie8p0004kki28xks1kq4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -306,7 +306,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/08/20200408@%E6%A8%A1%E6%8B%9F%E7%AE%80%E6%98%93Spring/" data-id="ckezf4ld200026si2btbogszm" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/08/20200408@%E6%A8%A1%E6%8B%9F%E7%AE%80%E6%98%93Spring/" data-id="ckezfie8n0003kki29jl7e0mn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -443,7 +443,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/05/20200405@%E5%AE%9A%E6%97%B6%E5%99%A8@%E4%BB%A3%E7%90%86%E6%9C%BA%E5%88%B6@%E5%8C%85%E6%89%AB%E6%8F%8F/" data-id="ckezf4ld500066si20yjy4vnl" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/05/20200405@%E5%AE%9A%E6%97%B6%E5%99%A8@%E4%BB%A3%E7%90%86%E6%9C%BA%E5%88%B6@%E5%8C%85%E6%89%AB%E6%8F%8F/" data-id="ckezfie8m0002kki2h4wx1otk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -524,7 +524,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/" data-id="ckezf4ld500076si28pwad8dk" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/" data-id="ckezfie8k0001kki2ec08dufb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +636,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" data-id="ckezf4lcu00006si2652lhuew" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" data-id="ckezfie8e0000kki2h3fjdt3m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,7 +673,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/" data-id="ckezf4ld200036si23rpie3cq" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/" data-id="ckezfie8r0005kki296xz998c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -880,7 +880,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ckezf4ldo000a6si2848s1f2y" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ckezfie95000akki2hluq8oup" class="article-share-link">Share</a>
       
       
     </footer>
@@ -988,7 +988,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" data-id="ckezf4ld300046si2g34gei44" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" data-id="ckezfie8t0007kki21j6ab217" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1067,7 +1067,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/" data-id="ckezf4ld600086si2abur9dsd" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/" data-id="ckezfie8u0008kki292ue31wr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1190,7 +1190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ckezf4ld400056si2c09yalgp" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ckezfie8s0006kki2373nbpnb" class="article-share-link">Share</a>
       
       
     </footer>
