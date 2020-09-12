@@ -64,104 +64,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-20200911@接口@排序" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/09/11/20200911@%E6%8E%A5%E5%8F%A3@%E6%8E%92%E5%BA%8F/" class="article-date">
-  <time datetime="2020-09-11T13:52:53.046Z" itemprop="datePublished">2020-09-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/09/11/20200911@%E6%8E%A5%E5%8F%A3@%E6%8E%92%E5%BA%8F/">20200911@接口@排序</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="接口功能与特点"><a href="#接口功能与特点" class="headerlink" title="接口功能与特点"></a>接口功能与特点</h1><h2 id="类型的统一与保护"><a href="#类型的统一与保护" class="headerlink" title="类型的统一与保护"></a>类型的统一与保护</h2><p>​        我们在编程的时候，会不断的创建出许多类，类的本质就是类型，随着类得种类越来越多，数据类型也变得越来越多。假如我们有个需求，需要统一管理某些类，我们很容易就能想到使用<code>HashMap</code>，处理键值对的好帮手。在没有接口的情况下，我们可以使用万物的基类<code>Object</code>。<code>HashMap&lt;String, Object&gt;</code>，但是，问题也出在<code>Object</code>上，正是因为它的包容性，任何其他类类型的对象也可以存储到这个Map里，对这个Map进行捣乱。</p>
-<p>​        上述问题本质是因为“<strong>类型保护的缺失</strong>“而造成的。现在可以用接口很轻松的解决这个问题。定义一个接口，里面可以什么都不做。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IMyType</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​        在让你需要归为一类的类实现这个接口，它们就可以用这个接口进行统一了。<code>HashMap&lt;String, IMyType&gt;</code>，之后对于Map的操作，满足实现接口<code>IMyType</code>的类的对象才可以进入Map进行操作。</p>
-<p><strong>是的，一个空空如也的接口作用都有这么大的作用！！！</strong></p>
-<p>​        但是，有一个问题，只能对自己定义的类进行操作，而对已有的类，我们没有办法接触到源代码，不能更改就不启作用了。还是有办法的：新建一个类，继承这个内部工具类，实现所有的构造方法，并让这个类实现<code>IMyType</code>接口，以后用这个新类替代原来的内部工具类。但是对于一些<code>final</code>修饰的类（<strong><code>String</code></strong>）就没有办法了。</p>
-<hr>
-<h2 id="规范方法"><a href="#规范方法" class="headerlink" title="规范方法"></a>规范方法</h2><p>​        接口在使用中有一个强有力的规定：<strong>凡是实现了该接口的非抽象类，就必须实现这个接口所规定的所有抽象方法</strong>。正是因为这个规定十分严格，也就有了<strong>规范行为</strong>的意义。有如下规范。</p>
-<pre><code>1. 接口的所有方法必须实现，一个都不能少
-  2. 规范了方法的名称
-                3. 规范了方法的参数个数以及类型
-            4. 规范了方法的返回值</code></pre><p>​        但是，规范是规范，规定你必须这样做并不涉及方法的具体实现，这一点在swing编程的适配器（Adapter）有体现。</p>
-<hr>
-<h2 id="方法的公开"><a href="#方法的公开" class="headerlink" title="方法的公开"></a>方法的公开</h2><p>​        同样是规范的作用，只不过这次看的角度不同，从应用角度看。如果我们已知一个接口，那么当我们遇到它的实现类后，我们就可以肆无忌惮的去调用接口里的方法，因为这个类一定实现了的。</p>
-<p>​        <strong>我们甚至不用关心这个类具体是什么，只要判定这个类的对象是接口的实例，就可以调用接口的方法。</strong></p>
-<hr>
-<h2 id="分离原则"><a href="#分离原则" class="headerlink" title="分离原则"></a><font color = red>分离原则</font></h2><p>​        假如我们有这么一种需求，对数据进行排序，而这些数据可能来源并不相同。有的可能来自键入，有的可能来自文件，有的可能来自网络，也可能来自数据库。</p>
-<p>​        首先可以写我们已知的数据排序类。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ArrayList&lt;Integer&gt; dataList;	<span class="comment">//仅仅先假设我们处理的都是int数据</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DataSort</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title">getDataList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> dataList;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDataList</span><span class="params">(ArrayList&lt;Integer&gt; dataList)</span> </span>&#123;	<span class="comment">//如何set最初始的数据？</span></span><br><span class="line">		<span class="keyword">this</span>.dataList = dataList;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> temp;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dataList.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = i +<span class="number">1</span>; j &lt; dataList.size(); j++) &#123;</span><br><span class="line">				<span class="keyword">int</span> num1 = dataList.get(i);</span><br><span class="line">				<span class="keyword">int</span> num2 = dataList.get(j);</span><br><span class="line">				<span class="keyword">if</span> (num1 &gt; num2) &#123;</span><br><span class="line">					temp = num1;</span><br><span class="line">					dataList.set(i, num2);</span><br><span class="line">					dataList.set(j, temp);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​        可以先写由键入来的数据。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataFromScanner</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DataFromScanner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title">inputData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">		ArrayList&lt;Integer&gt; dataSource = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">		<span class="keyword">int</span> num;</span><br><span class="line">		<span class="keyword">while</span> (sc.hasNextInt()) &#123;</span><br><span class="line">			num = sc.nextInt();</span><br><span class="line">			dataSource.add(num);</span><br><span class="line">		&#125;</span><br><span class="line">		sc.close();</span><br><span class="line">		<span class="keyword">return</span> dataSource;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		DataSort ds = <span class="keyword">new</span> DataSort();</span><br><span class="line">		DataFromScanner dfs = <span class="keyword">new</span> DataFromScanner();</span><br><span class="line">		ds.setDataList(dfs.inputData());</span><br><span class="line">		ds.sort();</span><br><span class="line">		ArrayList&lt;Integer&gt; result = ds.getDataList();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; result.size(); i++) &#123;</span><br><span class="line">			System.out.print((i == <span class="number">0</span> ? <span class="string">""</span> : <span class="string">", "</span>) + result.get(i));		</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​        经过实验可以正常排序。但是，如果来自其他的输入源怎么办？再写个DataFromNet，DataFromFile吗？</p>
-<blockquote>
-<p><font color= red><strong>Java面向对象思想终极目标是代码复用</strong></font></p>
-</blockquote>
-<p>​        我们回过头再来考虑这件事，数据输入和数据排序的关系是什么呢？数据输入属于数据排序吗？其实，数据输入是数据排序必不可少的一项工作，因此应该把数据输入看作数据排序的一个成员。还是上面那个问题，是选择<code>DataFromScanner</code>作为成员呢？还是<code>DataFromNet</code>,还是<code>DataFromFile</code>?答案是都不是，但是需要它们全部，这又体现出接口的第一个功能了，统一起来用一个类型，<strong>接口类型</strong>！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IDataSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function">ArrayList&lt;Integer&gt; <span class="title">inputData</span><span class="params">()</span></span>;			<span class="comment">//方法规定好是数据输入，至于你怎么输入我只规定，后来去实现</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ArrayList&lt;Integer&gt; dataList;</span><br><span class="line">	<span class="keyword">private</span> IDataSource dataSource;		<span class="comment">//数据输入作为数据排序的成员，且是接口类型，就可以从多个源获取数据了</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DataSort</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		dataList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title">getDataList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> dataList;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDataSource</span><span class="params">(IDataSource dataSource)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.dataSource = dataSource;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setDataList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (dataSource == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">this</span>.dataList = dataSource.inputData();	<span class="comment">//因为相关实现接口的的类一定完成了这个方法，一定能得到想要的dataList</span></span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		setDataList();<span class="comment">//只要你把输入源头定好了，下一步可直接排序，因为输入数据是排序的一部分步骤</span></span><br><span class="line">		<span class="keyword">int</span> temp;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dataList.size(); i++) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = i +<span class="number">1</span>; j &lt; dataList.size(); j++) &#123;</span><br><span class="line">				<span class="keyword">int</span> num1 = dataList.get(i);</span><br><span class="line">				<span class="keyword">int</span> num2 = dataList.get(j);</span><br><span class="line">				<span class="keyword">if</span> (num1 &gt; num2) &#123;</span><br><span class="line">					temp = num1;</span><br><span class="line">					dataList.set(i, num2);</span><br><span class="line">					dataList.set(j, temp);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dataList.size(); i++) &#123;</span><br><span class="line">			System.out.print((i == <span class="number">0</span> ? <span class="string">""</span> : <span class="string">", "</span>) + dataList.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		DataSort ds = <span class="keyword">new</span> DataSort();</span><br><span class="line">		ds.setDataSource(<span class="keyword">new</span> DataFromScanner());  <span class="comment">//对于不同的数据源头只用改这里</span></span><br><span class="line">		ds.sort();</span><br><span class="line">		System.out.println(<span class="string">"排序后:"</span>);</span><br><span class="line">		ds.showList();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>![]<img src="/img/Interface/1.png" alt="1" style="zoom:50%;" /></p>
-<hr>
-<h1 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h1><h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>​        外循环是排序需要的趟数，n个数，只需n-1趟，最后只剩一位就在该在的位置。</p>
-<p>​        内循环是一趟相邻两数的比较，按需要的顺序写比较规则，要注意的是，因为每过一趟就有一个数排好了（一个泡泡到边边了），因此在减去躺次数。</p>
-<p>​        平均时间复杂度：O（n^2）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BubbleSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span>[] arr = &#123;<span class="number">1</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">3</span>&#125;;	</span><br><span class="line">		<span class="keyword">int</span>[] sortArr = bubbleSort(arr);</span><br><span class="line">		System.out.println(Arrays.toString(sortArr));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] bubbleSort(<span class="keyword">int</span>[] array) &#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; array.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; array.length - <span class="number">1</span> - i; j++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (array[j] &gt; array[j + <span class="number">1</span>]) &#123;</span><br><span class="line">					temp = array[j];</span><br><span class="line">					array[j] = array[j + <span class="number">1</span>];</span><br><span class="line">					array[j + <span class="number">1</span>] = temp;</span><br><span class="line">					flag = <span class="keyword">true</span>;</span><br><span class="line">				&#125;			</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (flag == <span class="keyword">false</span>) &#123;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> array;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​        优化内容：外循环加个boolean值标志旗子，如果没有发生交换了说明都排好了，直接把外循环跳出，如果经过比较了，又要把旗子置回原位了。</p>
-<hr>
-<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>​        快速排序其实就是每一轮处理将这一轮的基准数归位，直到所有数归位，排序就结束了。因为每次交换是跳跃式的，每次排序的时候设置一个基准点，将小于基准点的数全部放到基准数的左边，将大于基准数的数全部放到基准数的右边。这样不会像冒泡排序每次都只能在相邻的数交换，交换的距离变大，因此总的比较和交换次数就变得少了。但在最坏的情况下依然是相邻的两个数交换。</p>
-<p>​        平均时间复杂度：O(NlogN)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span>[] array = &#123;<span class="number">6</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">8</span>&#125;;</span><br><span class="line">		quickSort(array, <span class="number">0</span>, array.length - <span class="number">1</span>);</span><br><span class="line">		System.out.println(Arrays.toString(array));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] array, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span> (left &gt; right) &#123;				<span class="comment">//对于函数有递归，一定要记得有退出递归的方法</span></span><br><span class="line">			<span class="keyword">return</span>;							<span class="comment">//如果左边索引比右边索引大，是不合法的，要退出</span></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> base = array[left];		<span class="comment">//保存基准数</span></span><br><span class="line">		<span class="keyword">int</span> i = left;						</span><br><span class="line">		<span class="keyword">int</span> j = right;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> (i != j) &#123;				<span class="comment">//当i和j不相遇的时候，在循环中检索</span></span><br><span class="line">			<span class="keyword">while</span> (array[j] &gt;= base &amp;&amp; i &lt; j) &#123;	<span class="comment">//j从右往左检索，当发现小于基准数的停下，意味着大于等于基准数继续走</span></span><br><span class="line">				j--;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">while</span> (array[i] &lt;= base &amp;&amp; i &lt; j) &#123;	<span class="comment">//i从左往右检索，当发现大于基准数的停下，意味着小于等于基准数继续走</span></span><br><span class="line">				i++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//代码走到这，i和j都停下了，然后我们就需要交换。</span></span><br><span class="line">			<span class="keyword">int</span> temp = array[i];</span><br><span class="line">			array[i] = array[j];</span><br><span class="line">			array[j] = temp;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//如果上面while循环条件不成立，说明i和j相遇了，把基准数和相遇位置元素进行交换。</span></span><br><span class="line">		array[left] = array[i];</span><br><span class="line">		array[j] = base;</span><br><span class="line">		<span class="comment">//基准数现在就排到正确的位置了，左边的数都比他小，右边都比他大。接下来就是递归快速排序左边和右边。</span></span><br><span class="line">		quickSort(array, left, i - <span class="number">1</span>);</span><br><span class="line">		quickSort(array, j + <span class="number">1</span>, right);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​        优化内容：对于数组非常小，其实快速排序不如直接插入排序性能好（直接插入是简单排序中性能最好的）。因此可以设置一个阈值，当低于这个阈值，就用直接插入排序。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_LENGTH_INSERT_SORT = <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (right - left &gt; MAX_LENGTH_INSERT_SORT) &#123;</span><br><span class="line">		<span class="comment">//快排</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">//直接插入排序</span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<hr>
-<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>​        该算法采用经典的<strong><font color= red>分治</font></strong>策略，<font color=red><strong>分</strong></font>：将大的问题分成一些小的问题然后再递归求解。<font color=red><strong>治</strong></font>：将分的阶段得到的各答案“修补“在一起。</p>
-<p><img src="E:%5Cblog%5CHonorZmjBlog%5Csource%5Cimg%5CInterface%5C2.png" alt=""></p>
-<p><img src="E:%5Cblog%5CHonorZmjBlog%5Csource%5Cimg%5CInterface%5C3.png" alt=""></p>
-<p><img src="E:%5Cblog%5CHonorZmjBlog%5Csource%5Cimg%5CInterface%5C4.png" alt=""></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span>[] array = &#123;<span class="number">1</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">8</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span>&#125;;</span><br><span class="line">		<span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[array.length];</span><br><span class="line">		mergeSort(array, <span class="number">0</span>, array.length - <span class="number">1</span>, temp);</span><br><span class="line">		System.out.println(Arrays.toString(array));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//分+合方法</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> left,<span class="keyword">int</span> right, <span class="keyword">int</span>[] temp)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">			<span class="keyword">int</span> mid = (left + right) / <span class="number">2</span>;</span><br><span class="line">			<span class="comment">//左递归进行分解</span></span><br><span class="line">			mergeSort(arr, left, mid, temp);</span><br><span class="line">			<span class="comment">//右递归分解</span></span><br><span class="line">			mergeSort(arr, mid + <span class="number">1</span>, right, temp);</span><br><span class="line">			<span class="comment">//每分解一次就要合并一次，对称的</span></span><br><span class="line">			merge(arr, left, mid, right, temp);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 合并</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> arr		排序的原始数组</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> left		左边有序序列的初始索引</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> mid	中间索引</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> right	右边索引</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> temp	做中转的数组</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right, <span class="keyword">int</span>[] temp)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> i = left;	<span class="comment">//初始化i，左边有序序列的初始索引</span></span><br><span class="line">		<span class="keyword">int</span> j = mid + <span class="number">1</span>; <span class="comment">//初始化j，右边有序序列的初始索引</span></span><br><span class="line">		<span class="keyword">int</span> t = <span class="number">0</span>; <span class="comment">//	指向temp数组的当前索引</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//1.先把左右两边的数据（有序的）按照规则填充到temp数组，直到左右两边的有序序列，有一边处理完毕为止</span></span><br><span class="line">		<span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;=right) &#123;</span><br><span class="line">			<span class="keyword">if</span> (arr[i] &lt;= arr[j]) &#123;	<span class="comment">//如果发现左边的当前元素小于等于右边的当前元素，将左边的当前元素copy到temp数组</span></span><br><span class="line">				temp[t++] = arr[i++];</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				temp[t++] = arr[j++];  <span class="comment">//反之将右边当前元素copy进去</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//2.把有剩余数据的一边的数据以此全部填充到temp去</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> (i &lt;= mid) &#123; <span class="comment">//说明左边有序序列还有剩余的元素，就全部填充过去</span></span><br><span class="line">			temp[t++] = arr[i++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">			temp[t++] = arr[j++];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//3.将temp数组元素拷贝到array </span></span><br><span class="line">		<span class="comment">//temp长度和原数组是一样的，没排好顺序之前，每次只用一部分不能全覆盖</span></span><br><span class="line">		t = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> tempLeft = left;</span><br><span class="line">		<span class="keyword">while</span> (tempLeft &lt;= right) &#123;</span><br><span class="line">			arr[tempLeft++] = temp[t++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/09/11/20200911@%E6%8E%A5%E5%8F%A3@%E6%8E%92%E5%BA%8F/" data-id="ckezfie8p0004kki28xks1kq4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-20200408@模拟简易Spring" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/04/08/20200408@%E6%A8%A1%E6%8B%9F%E7%AE%80%E6%98%93Spring/" class="article-date">
@@ -306,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/08/20200408@%E6%A8%A1%E6%8B%9F%E7%AE%80%E6%98%93Spring/" data-id="ckezfie8n0003kki29jl7e0mn" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/08/20200408@%E6%A8%A1%E6%8B%9F%E7%AE%80%E6%98%93Spring/" data-id="ckezftqpr0003j0i216ul40np" class="article-share-link">Share</a>
       
       
     </footer>
@@ -443,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/05/20200405@%E5%AE%9A%E6%97%B6%E5%99%A8@%E4%BB%A3%E7%90%86%E6%9C%BA%E5%88%B6@%E5%8C%85%E6%89%AB%E6%8F%8F/" data-id="ckezfie8m0002kki2h4wx1otk" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/05/20200405@%E5%AE%9A%E6%97%B6%E5%99%A8@%E4%BB%A3%E7%90%86%E6%9C%BA%E5%88%B6@%E5%8C%85%E6%89%AB%E6%8F%8F/" data-id="ckezftqpq0002j0i2g4lq8zlv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -524,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/" data-id="ckezfie8k0001kki2ec08dufb" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/03/20200403@%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5@BS@%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E4%BF%A1%E6%81%AF@%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C@Communication%E5%88%9D%E6%AD%A5/" data-id="ckezftqpi0000j0i28fvk0knn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +538,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" data-id="ckezfie8e0000kki2h3fjdt3m" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/" data-id="ckezftqpo0001j0i2azrp2u8g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,7 +575,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/" data-id="ckezfie8r0005kki296xz998c" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/" data-id="ckezftqps0004j0i245zyhavt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -880,7 +782,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ckezfie95000akki2hluq8oup" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/17/CSFramework%E5%B0%8F%E5%9E%8B%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" data-id="ckezftqq10009j0i293osgmc0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -988,7 +890,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" data-id="ckezfie8t0007kki21j6ab217" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/11/CSFramework%E7%9A%84%E5%BC%95%E5%87%BA/" data-id="ckezftqpu0006j0i2d8p7hsix" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1067,7 +969,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/" data-id="ckezfie8u0008kki292ue31wr" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/06/XML%E6%96%87%E4%BB%B6%E4%B8%8EProperites%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7/" data-id="ckezftqpt0005j0i20cabdriw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1190,7 +1092,57 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ckezfie8s0006kki2373nbpnb" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ckezftqpv0007j0i2fg584qaw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-我的第一篇博客" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" class="article-date">
+  <time datetime="2020-03-02T06:58:20.220Z" itemprop="datePublished">2020-03-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">我的第一篇博客</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;这是我的第一篇博客，首先要感谢一个B站up主，根据他的视频<a href="https://www.bilibili.com/video/av44544186" target="_blank" rel="noopener">搭建个人博客</a>，我才建立起自己的Hexo博客的。因为是第一次写博客，所以对一些内容还不是很熟悉，并且排版也不是很美观，以后会尽量多学习和多写博客，争取写出排版美观，内容充实的好博文。</p>
+<p>&emsp;&emsp;先来简要说说我的大一大二生活吧，我大一大二就是玩上来的基本没有学习，倒是游戏的Rank分打的挺高，还自诩自己是西邮GuXue和西邮第一辅助，为了游戏上分，我经常熬夜打游戏，就这样浑浑噩噩过了两年，荒废了两年时光。直到大二下才彻底醒悟，觉得我游戏打那么好也不算什么特长以后也不能写在简历上拿这个去找工作。还想到曾经老师讲过的一句话:“一个人虚拟世界等级越高，他在现实生活中就越空虚。”我发现说的真对，我在现实生活中就和网上是截然不同性格的两个人，网络中我打字飞快，和网友什么骚话和梗都能说得出，现实生活中唯唯诺诺，参加聚会就一个人独自在旁边听，一句话也不说。  </p>
+<p>&emsp;&emsp;因此，我从大二下就开始改变了。我开始听课了，并且有一些喜欢的课程。我有好习惯的，喜欢总结东西，有整理笔记的好习惯。但纸质笔记有个缺点，不易携带，且我个人不喜欢写标题而且字有点潦草，每次翻阅查找都很麻烦。直到知道了博客，完全可以解决上述缺点，因此我准备把写笔记的好习惯改为写博文的好习惯，用来记录我在学习中的问题。下面来写下我自己认为写博文的好处。</p>
+<h2 id="写博客的好处"><a href="#写博客的好处" class="headerlink" title="写博客的好处"></a>写博客的好处</h2><ol>
+<li>&emsp;写博客可以系统的整合自己某一阶段的学习成果。以前我的写在本子上的笔记就是这样的，先听老师上课讲，我就旁边放上草稿纸，记住关键性的内容，课后利用时间去整理，再去查资料完善笔记。现在就是把记笔记的过程换成写博客的过程，两者都是对自己某一阶段的学习做个总结。在这里我对自己提出要求：一定不能拖，讲完的内容趁热打铁，尽快写成自己通俗易懂的文字进行总结。  </li>
+<li>&emsp;提高总结能力。这点是我缺乏的，我需要锻炼的，因为我在做老师给的小项目的时候，总喜欢把问题划分到很细，总是考虑细枝末节，就偏离了主心骨了。就像一棵树，考虑问题一定要先完成树干主心骨这里的问题，不能盲目直接考虑到树枝枝芽，那样说不定会被陷在里面不能自拔。所以我要写博文提高自己总结能力，以到达问问题和总结问题一针见血的目的。</li>
+<li>&emsp;提高表达能力。我这个人不爱说话,但是和熟人却能畅谈，这可能就是人们说的性格:闷骚。网络看不见陌生人，或者都是陌生人，我就不在乎了，心理上就不会有所畏惧，就能大胆放心说话了。（反正你们又不认识我，也没见过我，更不能隔着屏幕来打我^_^）。还是要提高表达和与他人交流的能力的！因为以后面试的时候要面对面试官，当然要把自己所知道的知识大大方方的给面试官说出来。</li>
+</ol>
+<h2 id="对自己的要求"><a href="#对自己的要求" class="headerlink" title="对自己的要求"></a>对自己的要求</h2><ol>
+<li>&emsp;对于我这种编程小白来说现在写博文就写自己学习上遇到的问题和自己做的小项目，同时我将保证自己写的每个代码可以复现，这样为别人带来方便。给现在自己定的最大的目标:可以在秋招找个好工作。而现在小目标就是编程中遇到的问题，经过总结写成博文。就这样，一步步实现每个目标。</li>
+<li>&emsp;要把博客空间看做自己的网络小家，就像以前非主流时期（黑历史）打理自己空间一样精心打理博客。里面放着我在网上贡献的一切，以后希望回头看能看到充实的大学生活。</li>
+<li>&emsp;一定要坚持下来！坚持就是胜利。写博客要变成一种习惯，要成为每天必做的事。吾日三省吾身，今天博文写了吗？今天在写博文吗？今天有什么要写成博文的吗？一定要坚持，开始是很难的，排版也不美观，写的也没什么技术含量，但只要坚持写，一切都会变好的！</li>
+</ol>
+<p><br></br><br>&emsp;&emsp;好了，话不多说，现在就开始去写一篇技术博客。<br><br></br><br><br></br></p>
+<p align="right">最后编辑于:2020-03-03 14:54:57 星期二</p>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://honorzmj98.github.io/2020/03/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" data-id="ckezftqpw0008j0i2chqyb1m6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1201,11 +1153,6 @@
 
   
 
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
-  </nav>
 
 </section>
         
@@ -1223,7 +1170,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
     </div>
   </div>
 
@@ -1234,10 +1181,6 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2020/09/11/20200911@%E6%8E%A5%E5%8F%A3@%E6%8E%92%E5%BA%8F/">20200911@接口@排序</a>
-          </li>
         
           <li>
             <a href="/2020/04/08/20200408@%E6%A8%A1%E6%8B%9F%E7%AE%80%E6%98%93Spring/">20200408@模拟简易Spring</a>
@@ -1253,6 +1196,10 @@
         
           <li>
             <a href="/2020/04/01/20200401@DNS@BS@%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5/">20200401@DNS@BS@长连接和短连接</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/20/CSFramework%E7%9A%84%E5%BA%94%E7%94%A8/">CSFramework的应用</a>
           </li>
         
       </ul>
