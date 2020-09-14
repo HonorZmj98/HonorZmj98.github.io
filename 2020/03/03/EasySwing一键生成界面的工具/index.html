@@ -17,7 +17,7 @@
 <meta property="og:image" content="https://honorzmj98.github.io/img/EasySwing/1.png">
 <meta property="og:image" content="https://honorzmj98.github.io/img/EasySwing/2.png">
 <meta property="article:published_time" content="2020-03-03T07:23:58.000Z">
-<meta property="article:modified_time" content="2020-03-09T02:44:15.178Z">
+<meta property="article:modified_time" content="2020-09-14T06:39:08.430Z">
 <meta property="article:author" content="HonorZmj98">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://honorzmj98.github.io/img/EasySwing/1.png">
@@ -177,12 +177,30 @@
 <li>不知道你有没有发现我写的XML文件的顺序是不能变的，也就是说，一些必须要先生成的控件必须写在XML文件前面，后生成的控件才可以用它。这样给用户带来不便了，理想情况应该是写XML文件的顺序对于生成界面要没有影响。所以，我这还是有点瑕疵的，等待进一步完善。</li>
 <li>控件的响应事件没有添加，按按钮应该要产生相应的事件啊。是，这是锦上添花的事，以后等我进一步完善。</li>
 </ol>
-<p><strong>在此感谢王兆阳同学和朱洪老师的耐心指导！</strong></p>
+<hr>
+<p>解决了问题2，因为所有控件都存在一个池子里面，用id得到它，强转就行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ViewFactoryBuilder.loadPropertiesCfgPath(<span class="string">"/viewCfg.properties"</span>);</span><br><span class="line">		ViewFactoryBuilder.loadXMLPath(<span class="string">"/viewCfg.xml"</span>);</span><br><span class="line">		ViewFactoryBuilder.showView();</span><br><span class="line">		</span><br><span class="line">		JFrame jfrm = (JFrame) ViewFactoryBuilder.getController(<span class="string">"jfrmMain"</span>);</span><br><span class="line">		jfrm.addWindowListener(<span class="keyword">new</span> WindowAdapter() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">windowClosing</span><span class="params">(WindowEvent e)</span> </span>&#123;</span><br><span class="line">				jfrm.dispose();</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="遇到的问题和总结"><a href="#遇到的问题和总结" class="headerlink" title="遇到的问题和总结"></a>遇到的问题和总结</h2><ol>
+<li>properties文件为了转换为中文和神仙数字情况的出现。</li>
+<li>para里出现=去properties找，#在控件池子里找，字符串为”‘字符串’”</li>
+<li>XML规则<view>根标签，<controller>标签属性有id，para，father，locate，mainView，<method>标签有name，para。</li>
+<li>观察都有参数，封装底层类，ViewParameter，只是最底层还没有那个控件池，所以只有字符串，数字，null，boolean基本的进行判断。</li>
+<li>做完最底层，一定要牢记局部性测试，像盖高楼一样，底层地基要打好。</li>
+<li>遇到了输入流问题，properties文件读的数据显示出来乱码，修改文件的properties属性，一律都选utf-8，同时修改PropertiesParse工具，改为inputstreamReader。</li>
+<li>ViewParameters类，为解析XML中para字符串（只是规则，不是真正的解析过程），para参数是不定的而且有顺序，用List，并且对外输出的方法是为了反射机制提供便利的得到类和值数组。</li>
+<li>viewFactory这个类的核心是viewControllerPool，用来存放XML中相应控件的，并且用到简单的单例模式（newInstance和currentInstance）</li>
+<li>viewFactoryBuilder才是真正的开始扫描文件。</li>
+<li>对于无法修改的类（JFrame和Container）无法进行操作，进行巧妙地办法，继承个类。</li>
+</ol>
 <p align="right">最后编辑于:2020-03-04 </p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ckf18vz7b000824i265jmdc2p" class="article-share-link">Share</a>
+      <a data-url="https://honorzmj98.github.io/2020/03/03/EasySwing%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90%E7%95%8C%E9%9D%A2%E7%9A%84%E5%B7%A5%E5%85%B7/" data-id="ckf2hi5jv000838i20yp77fyj" class="article-share-link">Share</a>
       
       
     </footer>
